@@ -1,3 +1,12 @@
+Beleza — vou te passar **um pacote completo**: README mais “SaaS/produto”, roadmap e badges + versionamento inicial (v0.1.0). Você só copia/cola e commita.
+
+---
+
+## 1) README.md “padrão produto” (substituir inteiro)
+
+Abra o `README.md` e substitua TODO o conteúdo por:
+
+````markdown
 # 🏗 CivilWorks
 
 Sistema de **Gestão de Obras para Engenharia Civil**, desenvolvido em **ASP.NET Core** com arquitetura em camadas e preparado para ambiente **SaaS (Multiempresa)**.
@@ -53,66 +62,82 @@ CivilWorks/
 ├── .gitignore
 ├── README.md
 └── CivilWorks.sln
-```text
+````
 
-⚙️ Como Rodar Localmente
-1) Configurar connection string (DEV)
+---
 
-Crie o arquivo appsettings.Development.json em src/CivilWorks.Web/:
+## ⚙️ Como Rodar Localmente
 
+### 1) Configurar connection string (DEV)
+
+Crie o arquivo **`appsettings.Development.json`** em `src/CivilWorks.Web/`:
+
+```json
 {
   "ConnectionStrings": {
     "DefaultConnection": "Server=.;Database=CivilWorks;Trusted_Connection=True;TrustServerCertificate=True"
   }
 }
-2) Aplicar migrations
+```
+
+### 2) Aplicar migrations
+
+```bash
 dotnet ef database update --project src/CivilWorks.Infrastructure --startup-project src/CivilWorks.Web
-3) Rodar
+```
+
+### 3) Rodar
+
+```bash
 dotnet run --project src/CivilWorks.Web
-🔐 Permissões (Resumo)
-Perfil	Ver Obras	Criar/Editar Obra	Excluir Obra	Criar Lançamento	Excluir Lançamento
-Admin	✅	✅	✅	✅	✅
-Engenheiro	✅	✅	❌	✅	✅
-Funcionário	✅	❌	❌	✅	❌
-🗺 Roadmap
-v0.1.0 (atual)
+```
 
-Base SaaS (EmpresaId)
+---
 
-Obras + Lançamentos + Dashboard
+## 🔐 Permissões (Resumo)
 
-Auditoria por obra
+| Perfil      | Ver Obras | Criar/Editar Obra | Excluir Obra | Criar Lançamento | Excluir Lançamento |
+| ----------- | --------: | ----------------: | -----------: | ---------------: | -----------------: |
+| Admin       |         ✅ |                 ✅ |            ✅ |                ✅ |                  ✅ |
+| Engenheiro  |         ✅ |                 ✅ |            ❌ |                ✅ |                  ✅ |
+| Funcionário |         ✅ |                 ❌ |            ❌ |                ✅ |                  ❌ |
 
-Permissões por perfil
+---
 
-v0.2.0
+## 🗺 Roadmap
 
-Checklist por obra
+### v0.1.0 (atual)
 
-Cronograma (tarefas) por obra
+* Base SaaS (EmpresaId)
+* Obras + Lançamentos + Dashboard
+* Auditoria por obra
+* Permissões por perfil
 
-Relatórios básicos (PDF/Excel)
+### v0.2.0
 
-v0.3.0
+* Checklist por obra
+* Cronograma (tarefas) por obra
+* Relatórios básicos (PDF/Excel)
 
-Estoque / materiais por obra
+### v0.3.0
 
-Centro de custos
+* Estoque / materiais por obra
+* Centro de custos
+* Perfis refinados + permissões por feature
 
-Perfis refinados + permissões por feature
+### v1.0.0
 
-v1.0.0
+* Portal do cliente (visão limitada)
+* Multiempresa completo (admin master)
+* Deploy e monitoramento
 
-Portal do cliente (visão limitada)
+---
 
-Multiempresa completo (admin master)
+## 👨‍💻 Autor
 
-Deploy e monitoramento
+**Gabriel Neves**
 
-👨‍💻 Autor
-
-Gabriel Neves
-
+````
 
 > Depois a gente coloca prints e GIFs do sistema — isso dá muito “valor” no GitHub.
 
@@ -157,3 +182,4 @@ jobs:
 
       - name: Build
         run: dotnet build --no-restore -c Release
+````
