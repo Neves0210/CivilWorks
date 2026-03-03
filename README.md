@@ -1,11 +1,3 @@
-Perfeito 👌
-Abaixo está o **README.md completo, já pronto**, formatado corretamente para o GitHub (sem quebrar blocos de código).
-
-Você pode **copiar tudo** e substituir seu `README.md`.
-
----
-
-```markdown
 # 🏗 CivilWorks
 
 Sistema de **Gestão de Obras para Engenharia Civil**, desenvolvido em **ASP.NET Core** com arquitetura em camadas e preparado para ambiente **SaaS (Multiempresa)**.
@@ -188,5 +180,3 @@ git add README.md
 git commit -m "Update README - SaaS version"
 git push
 ````
-
----
