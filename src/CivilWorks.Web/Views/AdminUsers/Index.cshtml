@@ -1,0 +1,58 @@
+@model List<(CivilWorks.Infrastructure.Identity.ApplicationUser User, string Role)>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Usuários";
+    ViewData["Subtitle"] = "Gerencie usuários da sua empresa.";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="cw-muted">Total: <strong>@Model.Count</strong></div>
+    <a class="btn btn-primary" asp-action="Create">Novo usuário</a>
+</div>
+
+<div class="cw-card p-0 overflow-hidden">
+    <div class="table-responsive">
+        <table class="table mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Perfil</th>
+                    <th>Status</th>
+                    <th class="text-end" style="width:200px;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="5" class="p-4 text-center cw-muted">Nenhum usuário encontrado.</td></tr>
+            }
+            else
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.User.Nome</td>
+                        <td>@item.User.Email</td>
+                        <td><span class="badge bg-light text-dark">@item.Role</span></td>
+                        <td>
+                            <span class="badge @(item.User.IsActive ? "bg-success" : "bg-secondary")">
+                                @(item.User.IsActive ? "Ativo" : "Inativo")
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <form asp-action="ToggleActive" asp-route-id="@item.User.Id" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-sm btn-outline-secondary" type="submit">
+                                    @(item.User.IsActive ? "Desativar" : "Ativar")
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+@using CivilWorks.Domain.Enums
+@model CivilWorks.Domain.Entities.Obra
+
+<div class="row g-3">
+    <div class="col-12 col-lg-6">
+        <label class="form-label">Nome</label>
+        <input asp-for="Nome" class="form-control" />
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <label class="form-label">Cliente</label>
+        <select asp-for="ClienteId" class="form-select" asp-items="ViewBag.Clientes"></select>
+    </div>
+
+    <div class="col-12">
+        <label class="form-label">Descrição</label>
+        <textarea asp-for="Descricao" class="form-control" rows="3"></textarea>
+    </div>
+
+    <div class="col-12 col-lg-3">
+        <label class="form-label">Status</label>
+        <select asp-for="Status" class="form-select">
+            @foreach (var s in Enum.GetValues<StatusObra>())
+            {
+                <option value="@s">@s</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-12 col-lg-3">
+        <label class="form-label">Início</label>
+        <input asp-for="DataInicio" type="date" class="form-control" />
+    </div>
+
+    <div class="col-12 col-lg-3">
+        <label class="form-label">Previsão término</label>
+        <input asp-for="DataPrevisaoTermino" type="date" class="form-control" />
+    </div>
+
+    <div class="col-12 col-lg-3">
+        <label class="form-label">Progresso (%)</label>
+        <input asp-for="ProgressoPercentual" type="number" min="0" max="100" class="form-control" />
+    </div>
+
+    <div class="col-12 col-lg-4">
+        <label class="form-label">Orçamento previsto</label>
+        <input asp-for="OrcamentoPrevisto"
+            class="form-control money"
+            placeholder="0,00" />
+        <span asp-validation-for="OrcamentoPrevisto" class="text-danger"></span>
+    </div>
+</div>

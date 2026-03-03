@@ -1,0 +1,181 @@
+@using CivilWorks.Domain.Entities
+@using CivilWorks.Domain.Enums
+@model CivilWorks.Domain.Entities.Obra
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Detalhes da Obra";
+    ViewData["Subtitle"] = "Resumo, lançamentos e histórico.";
+
+    var lancamentos = ViewBag.Lancamentos as List<ObraLancamentoFinanceiro> ?? new();
+    var historico = ViewBag.Historico as List<ObraHistorico> ?? new();
+    var despesasPorCategoria = ViewBag.DespesasPorCategoria as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+    bool estourou = ViewBag.Estourou ?? false;
+    decimal excesso = ViewBag.Excesso ?? 0m;
+    decimal totalDespesas = ViewBag.TotalDespesas ?? 0m;
+    decimal totalReceitas = ViewBag.TotalReceitas ?? 0m;
+    decimal saldo = ViewBag.Saldo ?? 0m;
+}
+
+<div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+        <div class="fw-semibold fs-5">@Model.Nome</div>
+        <div class="cw-muted">Cliente: <strong>@Model.Cliente?.Nome</strong> • Status: <strong>@Model.Status</strong></div>
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.Id">Editar</a>
+        <a class="btn btn-outline-secondary" asp-action="Index">Voltar</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-12 col-md-4">
+        <div class="cw-card p-3">
+            <div class="cw-muted small">Orçamento previsto</div>
+            <div class="fs-4 fw-bold">@Model.OrcamentoPrevisto.ToString("N2")</div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="cw-card p-3">
+            <div class="cw-muted small">Despesas</div>
+            <div class="fs-4 fw-bold">@totalDespesas.ToString("N2")</div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="cw-card p-3">
+            <div class="cw-muted small">Saldo (receitas - despesas)</div>
+            <div class="fs-4 fw-bold">@saldo.ToString("N2")</div>
+        </div>
+    </div>
+</div>
+
+<div class="cw-card p-3 mt-3">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <div class="fw-semibold">Lançamentos</div>
+            <div class="cw-muted small">Despesas e receitas vinculadas à obra</div>
+        </div>
+        <a class="btn btn-primary btn-sm" asp-controller="ObraLancamentos" asp-action="Create" asp-route-obraId="@Model.Id">
+            Novo lançamento
+        </a>
+    </div>
+
+    <div class="table-responsive mt-3">
+        <table class="table mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Categoria</th>
+                    <th>Descrição</th>
+                    <th class="text-end">Valor</th>
+                    <th class="text-end" style="width:120px;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            @if (lancamentos.Count == 0)
+            {
+                <tr><td colspan="6" class="text-center cw-muted p-4">Sem lançamentos ainda.</td></tr>
+            }
+            else
+            {
+                foreach (var l in lancamentos)
+                {
+                    <tr>
+                        <td>@l.Data.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <span class="badge @(l.Tipo == TipoLancamento.Despesa ? "bg-danger" : "bg-success")">
+                                @l.Tipo
+                            </span>
+                        </td>
+                        <td>@l.Categoria</td>
+                        <td>@l.Descricao</td>
+                        <td class="text-end">@l.Valor.ToString("N2")</td>
+                        <td class="text-end">
+                            <form asp-controller="ObraLancamentos" asp-action="Delete" asp-route-id="@l.Id" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="obraId" value="@Model.Id" />
+                                <button class="btn btn-sm btn-outline-danger" type="submit"
+                                        onclick="return confirm('Excluir lançamento?');">
+                                    Excluir
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+        <div class="cw-card p-3 mt-3">
+            <div class="fw-semibold">Histórico</div>
+            <div class="cw-muted small">Últimas alterações e eventos da obra</div>
+
+            <div class="mt-3">
+                @if (historico.Count == 0)
+                {
+                    <div class="cw-muted">Nenhum evento registrado ainda.</div>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var h in historico)
+                        {
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div class="fw-semibold">@h.Evento</div>
+                                    <div class="cw-muted small">@h.CreatedAtUtc.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(h.Detalhes))
+                                {
+                                    <div class="cw-muted">@h.Detalhes</div>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+        @if (estourou)
+        {
+            <div class="alert alert-warning mt-3">
+                <strong>Atenção:</strong> despesas ultrapassaram o orçamento previsto em <strong>@excesso.ToString("N2")</strong>.
+            </div>
+        }
+
+        <div class="cw-card p-3 mt-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="fw-semibold">Despesas por categoria</div>
+                    <div class="cw-muted small">Ajuda a identificar onde está indo o dinheiro</div>
+                </div>
+            </div>
+
+            <div class="table-responsive mt-3">
+                <table class="table mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Categoria</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @if (!despesasPorCategoria.Any())
+                    {
+                        <tr><td colspan="2" class="text-center cw-muted p-4">Sem despesas lançadas.</td></tr>
+                    }
+                    else
+                    {
+                        foreach (var item in despesasPorCategoria)
+                        {
+                            <tr>
+                                <td>@item.Categoria</td>
+                                <td class="text-end">@(((decimal)item.Total).ToString("N2"))</td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

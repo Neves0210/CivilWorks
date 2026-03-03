@@ -1,0 +1,42 @@
+@model CivilWorks.Domain.Entities.Obra
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Editar Obra";
+    ViewData["Subtitle"] = "Atualize os dados da obra.";
+}
+
+<div class="cw-card p-3">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+
+        <input asp-for="Id" type="hidden" />
+
+        <partial name="_ObraForm" model="Model" />
+
+        <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-primary" type="submit">Salvar</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Voltar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.querySelectorAll('.money').forEach(function (input) {
+
+            input.addEventListener('input', function (e) {
+                let value = e.target.value;
+
+                value = value.replace(/\D/g, '');
+                value = (value / 100).toFixed(2) + '';
+                value = value.replace(".", ",");
+
+                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                e.target.value = value;
+            });
+        });
+    </script>
+}

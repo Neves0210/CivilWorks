@@ -1,0 +1,139 @@
+@using CivilWorks.Domain.Enums
+@model List<CivilWorks.Domain.Entities.Obra>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Obras";
+    ViewData["Subtitle"] = "Gerencie obras com orçamento, status e progresso.";
+
+    bool canCreate = User.IsInRole("Admin") || User.IsInRole("Engenheiro");
+    bool canEdit = User.IsInRole("Admin") || User.IsInRole("Engenheiro");
+    bool canDelete = User.IsInRole("Admin");
+
+    var q = ViewBag.Q as string;
+    StatusObra? status = ViewBag.Status;
+    int currentPage = ViewBag.Page;
+    int pageSize = ViewBag.PageSize;
+    int total = ViewBag.Total;
+    int totalPages = (int)Math.Ceiling((double)total / pageSize);
+}
+
+<div class="cw-card p-3">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-12 col-lg-5">
+            <label class="form-label">Buscar</label>
+            <input name="q" value="@q" class="form-control" placeholder="Nome da obra ou cliente" />
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select">
+                <option value="">Todos</option>
+                @foreach (var s in Enum.GetValues<StatusObra>())
+                {
+                    <option value="@s" selected="@(status.HasValue && status.Value == s)">
+                        @s
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-6 col-lg-2">
+            <label class="form-label">Por página</label>
+            <input name="pageSize" value="@pageSize" type="number" min="5" max="50" class="form-control" />
+        </div>
+
+        <div class="col-12 col-lg-2 d-flex gap-2">
+            <button class="btn btn-primary w-100" type="submit">Buscar</button>
+
+            @if (canCreate)
+            {
+                <a class="btn btn-outline-primary w-100" asp-action="Create">Nova</a>
+            }
+        </div>
+    </form>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-3">
+    <div class="cw-muted">Total: <strong>@total</strong></div>
+    @if (totalPages > 1)
+    {
+        <div class="cw-muted small">Página <strong>@currentPage</strong> de <strong>@totalPages</strong></div>
+    }
+</div>
+
+<div class="cw-card p-0 mt-2 overflow-hidden">
+    <div class="table-responsive">
+        <table class="table mb-0 align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Obra</th>
+                <th class="d-none d-lg-table-cell">Cliente</th>
+                <th>Status</th>
+                <th class="d-none d-md-table-cell">Orçamento</th>
+                <th class="d-none d-md-table-cell">Progresso</th>
+                <th class="text-end" style="width:240px;">Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="6" class="p-4 text-center cw-muted">Nenhuma obra encontrada.</td></tr>
+            }
+            else
+            {
+                foreach (var o in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">@o.Nome</div>
+                            <div class="cw-muted small d-lg-none">@o.Cliente?.Nome</div>
+                        </td>
+                        <td class="d-none d-lg-table-cell">@o.Cliente?.Nome</td>
+                        <td>@o.Status</td>
+                        <td class="d-none d-md-table-cell">@o.OrcamentoPrevisto.ToString("N2")</td>
+                        <td class="d-none d-md-table-cell">@o.ProgressoPercentual %</td>
+                        <td class="text-end">
+                            @if (canEdit)
+                            {
+                                <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@o.Id">Editar</a>
+                            }
+
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@o.Id">Detalhes</a>
+
+                            @if (canDelete)
+                            {
+                                <form asp-action="Delete" asp-route-id="@o.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button class="btn btn-sm btn-outline-danger" type="submit"
+                                            onclick="return confirm('Confirmar exclusão?');">Excluir</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (totalPages > 1)
+{
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+            @if (currentPage > 1)
+            {
+                <a class="btn btn-outline-secondary"
+                   href="?q=@q&status=@status&page=@(currentPage-1)&pageSize=@pageSize">Anterior</a>
+            }
+        </div>
+        <div>
+            @if (currentPage < totalPages)
+            {
+                <a class="btn btn-outline-secondary"
+                   href="?q=@q&status=@status&page=@(currentPage+1)&pageSize=@pageSize">Próxima</a>
+            }
+        </div>
+    </div>
+}

@@ -1,0 +1,24 @@
+@model CivilWorks.Domain.Entities.Cliente
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Novo Cliente";
+    ViewData["Subtitle"] = "Preencha os dados do cliente.";
+}
+
+<div class="cw-card p-3">
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <partial name="_ClienteForm" model="Model" />
+
+        <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Voltar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

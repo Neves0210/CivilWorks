@@ -1,0 +1,129 @@
+@{
+    var success = TempData["Success"] as string;
+    var error = TempData["Error"] as string;
+    var warning = TempData["Warning"] as string;
+
+    bool hasAny = !string.IsNullOrWhiteSpace(success) ||
+                  !string.IsNullOrWhiteSpace(error) ||
+                  !string.IsNullOrWhiteSpace(warning);
+}
+
+@if (hasAny)
+{
+    <style>
+        .cw-toast { border-radius: 14px; box-shadow: 0 10px 30px rgba(16, 24, 40, .12); overflow: hidden; }
+        .cw-toast-body { display: flex; gap: 10px; align-items: flex-start; }
+        .cw-toast-icon { width: 28px; height: 28px; border-radius: 10px; display:flex; align-items:center; justify-content:center; flex: 0 0 auto; }
+        .cw-toast-title { font-weight: 700; line-height: 1.2; }
+        .cw-toast-msg { opacity: .95; }
+        .cw-toast-progress { height: 3px; width: 100%; opacity: .9; }
+        .cw-progress-anim { width: 100%; height: 100%; transform-origin: left; animation: cwShrink linear forwards; }
+        @@keyframes cwShrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+    </style>
+
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+
+        @* SUCCESS *@
+        @if (!string.IsNullOrWhiteSpace(success))
+        {
+            var id = $"toast-success-{Guid.NewGuid():N}";
+            <div id="@id"
+                 class="toast cw-toast show"
+                 role="alert"
+                 aria-live="assertive"
+                 aria-atomic="true"
+                 data-bs-delay="3800"
+                 data-bs-autohide="true">
+
+                <div class="p-3">
+                    <div class="cw-toast-body">
+                        <div class="cw-toast-icon" style="background:#ecfdf3; color:#027a48;">
+                            ✓
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="cw-toast-title">Sucesso</div>
+                            <div class="cw-toast-msg text-muted">@success</div>
+                        </div>
+                        <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="cw-toast-progress" style="background:#d1fadf;">
+                    <div class="cw-progress-anim" style="background:#12b76a; animation-duration: 3800ms;"></div>
+                </div>
+            </div>
+        }
+
+        @* ERROR *@
+        @if (!string.IsNullOrWhiteSpace(error))
+        {
+            var id = $"toast-error-{Guid.NewGuid():N}";
+            <div id="@id"
+                 class="toast cw-toast show"
+                 role="alert"
+                 aria-live="assertive"
+                 aria-atomic="true"
+                 data-bs-delay="5200"
+                 data-bs-autohide="true">
+
+                <div class="p-3">
+                    <div class="cw-toast-body">
+                        <div class="cw-toast-icon" style="background:#fef3f2; color:#b42318;">
+                            !
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="cw-toast-title">Erro</div>
+                            <div class="cw-toast-msg text-muted">@error</div>
+                        </div>
+                        <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="cw-toast-progress" style="background:#fee4e2;">
+                    <div class="cw-progress-anim" style="background:#f04438; animation-duration: 5200ms;"></div>
+                </div>
+            </div>
+        }
+
+        @* WARNING *@
+        @if (!string.IsNullOrWhiteSpace(warning))
+        {
+            var id = $"toast-warning-{Guid.NewGuid():N}";
+            <div id="@id"
+                 class="toast cw-toast show"
+                 role="alert"
+                 aria-live="assertive"
+                 aria-atomic="true"
+                 data-bs-delay="4800"
+                 data-bs-autohide="true">
+
+                <div class="p-3">
+                    <div class="cw-toast-body">
+                        <div class="cw-toast-icon" style="background:#fffaeb; color:#b54708;">
+                            ⚠
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="cw-toast-title">Atenção</div>
+                            <div class="cw-toast-msg text-muted">@warning</div>
+                        </div>
+                        <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="cw-toast-progress" style="background:#fef0c7;">
+                    <div class="cw-progress-anim" style="background:#f79009; animation-duration: 4800ms;"></div>
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+            toastElList.forEach(function (toastEl) {
+                new bootstrap.Toast(toastEl).show();
+            });
+        });
+    </script>
+}

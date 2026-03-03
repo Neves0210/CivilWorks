@@ -1,0 +1,41 @@
+@model CivilWorks.Domain.Entities.Obra
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Nova Obra";
+    ViewData["Subtitle"] = "Cadastre a obra com orçamento e status.";
+}
+
+<div class="cw-card p-3">
+    <form asp-action="Create" method="post">
+        
+        <div asp-validation-summary="All" class="text-danger mb-2"></div>
+        
+        @Html.AntiForgeryToken()
+        <partial name="_ObraForm" model="Model" />
+        <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-primary" type="submit">Salvar</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Voltar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.querySelectorAll('.money').forEach(function (input) {
+
+            input.addEventListener('input', function (e) {
+                let value = e.target.value;
+
+                value = value.replace(/\D/g, '');
+                value = (value / 100).toFixed(2) + '';
+                value = value.replace(".", ",");
+
+                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                e.target.value = value;
+            });
+        });
+    </script>
+}

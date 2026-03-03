@@ -1,0 +1,188 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<CivilWorks.Infrastructure.Identity.ApplicationUser> SignInManager
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CivilWorks</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <style>
+        .cw-app { min-height: 100vh; background: #f6f7fb; }
+        .cw-topbar { height: 56px; background: #ffffff; border-bottom: 1px solid #e6e8ef; }
+        .cw-sidebar { width: 260px; background: #ffffff; border-right: 1px solid #e6e8ef; }
+        .cw-content { padding: 20px; }
+
+        .cw-brand { font-weight: 700; letter-spacing: .2px; }
+        .cw-nav .nav-link { color: #333; border-radius: 10px; padding: 10px 12px; }
+        .cw-nav .nav-link:hover { background: #f2f4ff; }
+        .cw-nav .nav-link.active { background: #e9ecff; font-weight: 600; }
+
+        .cw-card { border: 1px solid #e6e8ef; border-radius: 16px; background: #fff; }
+        .cw-muted { color: #667085; }
+
+        @@media (max-width: 991px) {
+            .cw-sidebar { width: 100%; border-right: none; border-bottom: 1px solid #e6e8ef; }
+        }
+    </style>
+</head>
+<body>
+<div class="cw-app d-flex flex-column">
+
+    <!-- Topbar -->
+    <header class="cw-topbar d-flex align-items-center">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-outline-secondary btn-sm d-lg-none" type="button"
+                        data-bs-toggle="offcanvas" data-bs-target="#cwSidebar"
+                        aria-controls="cwSidebar">
+                    Menu
+                </button>
+                <span class="cw-brand">CivilWorks</span>
+                <span class="cw-muted small">Gestão de Obras</span>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                @if (User?.Identity?.IsAuthenticated == true)
+                {
+                    <span class="cw-muted small">
+                        Olá, <strong>@(User.Identity?.Name)</strong>
+                    </span>
+
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">
+                            Sair
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Login">Entrar</a>
+                }
+            </div>
+        </div>
+    </header>
+
+    <!-- Body -->
+    <div class="d-flex flex-grow-1">
+        <!-- Sidebar -->
+        @{
+            var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+            string Active(string controller) => currentController.Equals(controller, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+        }
+
+        <!-- Sidebar Desktop -->
+        <aside class="cw-sidebar p-3 d-none d-lg-block">
+            <div class="mb-3 cw-muted small">Menu</div>
+
+            <nav class="cw-nav nav flex-column gap-1">
+                @if (User?.Identity?.IsAuthenticated == true)
+                {
+                    <a class="nav-link @Active("Dashboard")" asp-controller="Dashboard" asp-action="Index">
+                        <span class="me-2">🏠</span> Dashboard
+                    </a>
+
+                    <a class="nav-link @Active("Clientes")" asp-controller="Clientes" asp-action="Index">
+                        <span class="me-2">👤</span> Clientes
+                    </a>
+
+                    <a class="nav-link @Active("Obras")" asp-controller="Obras" asp-action="Index">
+                        <span class="me-2">🏗️</span> Obras
+                    </a>
+
+                    <a class="nav-link @Active("Financeiro")" asp-controller="Financeiro" asp-action="Index">
+                        <span class="me-2">💰</span> Financeiro <span class="badge bg-light text-dark ms-1">em breve</span>
+                    </a>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="mt-3 cw-muted small">Admin</div>
+                        <a class="nav-link @Active("Admin")" asp-controller="Admin" asp-action="Index">
+                            <span class="me-2">🛠️</span> Painel Admin
+                        </a>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="nav-link @Active("AdminUsers")" asp-controller="AdminUsers" asp-action="Index">
+                            <span class="me-2">👤</span> Usuários
+                        </a>
+                    }
+                }
+                else
+                {
+                    <div class="cw-muted small">Faça login para acessar.</div>
+                }
+            </nav>
+        </aside>
+
+        <!-- Sidebar Mobile (Offcanvas) -->
+        <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="cwSidebar" aria-labelledby="cwSidebarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="cwSidebarLabel">CivilWorks</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="mb-3 cw-muted small">Menu</div>
+
+                <nav class="cw-nav nav flex-column gap-1">
+                    @if (User?.Identity?.IsAuthenticated == true)
+                    {
+                        <a class="nav-link @Active("Dashboard")" asp-controller="Dashboard" asp-action="Index" data-bs-dismiss="offcanvas">
+                            <span class="me-2">🏠</span> Dashboard
+                        </a>
+
+                        <a class="nav-link @Active("Clientes")" asp-controller="Clientes" asp-action="Index" data-bs-dismiss="offcanvas">
+                            <span class="me-2">👤</span> Clientes
+                        </a>
+
+                        <a class="nav-link @Active("Obras")" asp-controller="Obras" asp-action="Index" data-bs-dismiss="offcanvas">
+                            <span class="me-2">🏗️</span> Obras <span class="badge bg-light text-dark ms-1">em breve</span>
+                        </a>
+
+                        <a class="nav-link @Active("Financeiro")" asp-controller="Financeiro" asp-action="Index" data-bs-dismiss="offcanvas">
+                            <span class="me-2">💰</span> Financeiro <span class="badge bg-light text-dark ms-1">em breve</span>
+                        </a>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="mt-3 cw-muted small">Admin</div>
+                            <a class="nav-link @Active("Admin")" asp-controller="Admin" asp-action="Index" data-bs-dismiss="offcanvas">
+                                <span class="me-2">🛠️</span> Painel Admin
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <div class="cw-muted small">Faça login para acessar.</div>
+                    }
+                </nav>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <main class="flex-grow-1">
+            <div class="cw-content">
+                <div class="mb-3">
+                    <h4 class="mb-0">@ViewData["Title"]</h4>
+                    @if (ViewData["Subtitle"] is string subtitle && !string.IsNullOrWhiteSpace(subtitle))
+                    {
+                        <div class="cw-muted">@subtitle</div>
+                    }
+                </div>
+                <partial name="_Toasts" />
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@RenderSection("Scripts", required: false)
+</body>
+</html>

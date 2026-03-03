@@ -1,0 +1,104 @@
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Dashboard";
+    ViewData["Subtitle"] = "Visão rápida da operação.";
+
+    int totalClientes = ViewBag.TotalClientes ?? 0;
+    int totalObrasAtivas = ViewBag.TotalObrasAtivas ?? 0;
+    decimal orcamentoPrevisto = ViewBag.OrcamentoPrevistoAtivas ?? 0m;
+    decimal custoReal = ViewBag.CustoRealAtivas ?? 0m;
+    int obrasEstouradas = ViewBag.ObrasEstouradas ?? 0;
+
+    var saldo = orcamentoPrevisto - custoReal;
+}
+
+<div class="row g-3">
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="cw-card p-3">
+            <div class="cw-muted small">Clientes</div>
+            <div class="fs-2 fw-bold">@totalClientes</div>
+            <div class="mt-2">
+                <a class="btn btn-sm btn-outline-primary" asp-controller="Clientes" asp-action="Index">Ver clientes</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="cw-card p-3">
+            <div class="cw-muted small">Obras ativas</div>
+            <div class="fs-2 fw-bold">@totalObrasAtivas</div>
+            <div class="mt-2">
+                <a class="btn btn-sm btn-outline-primary" asp-controller="Obras" asp-action="Index">Ver obras</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="cw-card p-3">
+            <div class="cw-muted small">Orçamento previsto (ativas)</div>
+            <div class="fs-4 fw-bold">@orcamentoPrevisto.ToString("N2")</div>
+            <div class="cw-muted small">Soma do previsto em obras em andamento</div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="cw-card p-3">
+            <div class="cw-muted small">Custo real (ativas)</div>
+            <div class="fs-4 fw-bold">@custoReal.ToString("N2")</div>
+            <div class="cw-muted small">Soma de despesas lançadas</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mt-1">
+    <div class="col-12 col-lg-6">
+        <div class="cw-card p-3">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="fw-semibold">Saldo (previsto - real)</div>
+                    <div class="cw-muted small">Indicador simples para acompanhar risco</div>
+                </div>
+                <span class="badge @(saldo < 0 ? "bg-danger" : "bg-success")">
+                    @(saldo < 0 ? "Atenção" : "Ok")
+                </span>
+            </div>
+
+            <div class="mt-2 fs-4 fw-bold">
+                @saldo.ToString("N2")
+            </div>
+
+            <div class="cw-muted small mt-1">
+                Quando ficar negativo, a obra (ou conjunto de obras) está acima do previsto.
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <div class="cw-card p-3">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="fw-semibold">Obras estouradas</div>
+                    <div class="cw-muted small">Custo real maior que o orçamento previsto</div>
+                </div>
+                <span class="badge @(obrasEstouradas > 0 ? "bg-warning text-dark" : "bg-light text-dark")">
+                    @obrasEstouradas
+                </span>
+            </div>
+
+            <div class="mt-2">
+                <a class="btn btn-sm btn-outline-secondary" asp-controller="Obras" asp-action="Index" asp-route-status="EmAndamento">
+                    Ver obras em andamento
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cw-card p-3 mt-3">
+    <div class="fw-semibold">Próximos passos (Sprint 3)</div>
+    <ul class="mt-2 mb-0">
+        <li>CRUD de Obras (já com cliente, status, datas, orçamento, progresso)</li>
+        <li>Tela de lançamentos financeiros por Obra (despesas/receitas + categorias)</li>
+        <li>Histórico da obra (auditoria: quem alterou e o que mudou)</li>
+    </ul>
+</div>

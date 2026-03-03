@@ -1,0 +1,121 @@
+@model List<CivilWorks.Domain.Entities.Cliente>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Clientes";
+    ViewData["Subtitle"] = "Cadastre, edite e pesquise seus clientes.";
+
+    var q = ViewBag.Q as string;
+    int currentPage = ViewBag.Page;
+    int pageSize = ViewBag.PageSize;
+    int total = ViewBag.Total;
+    int totalPages = (int)Math.Ceiling((double)total / pageSize);
+}
+
+<div class="cw-card p-3">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-12 col-lg-6">
+            <label class="form-label">Buscar</label>
+            <input name="q" value="@q" class="form-control" placeholder="Nome, documento ou e-mail" />
+        </div>
+
+        <div class="col-6 col-lg-2">
+            <label class="form-label">Por página</label>
+            <input name="pageSize" value="@pageSize" type="number" min="5" max="50" class="form-control" />
+        </div>
+
+        <div class="col-6 col-lg-4 d-flex gap-2">
+            <button class="btn btn-primary w-100" type="submit">Buscar</button>
+            <a class="btn btn-outline-primary w-100" asp-action="Create">Novo cliente</a>
+        </div>
+    </form>
+</div>
+
+<div class="d-flex align-items-center justify-content-between mt-3">
+    <div class="cw-muted">
+        Total: <strong>@total</strong>
+    </div>
+
+    @if (totalPages > 1)
+    {
+        <div class="cw-muted small">
+            Página <strong>@currentPage</strong> de <strong>@totalPages</strong>
+        </div>
+    }
+</div>
+
+<div class="cw-card p-0 mt-2 overflow-hidden">
+    <div class="table-responsive">
+        <table class="table mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Nome</th>
+                    <th class="d-none d-md-table-cell">Documento</th>
+                    <th class="d-none d-lg-table-cell">E-mail</th>
+                    <th class="d-none d-lg-table-cell">Telefone</th>
+                    <th class="text-end" style="width:240px;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr>
+                    <td colspan="5" class="p-4 text-center cw-muted">
+                        Nenhum cliente encontrado.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var c in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">@c.Nome</div>
+                            <div class="cw-muted small d-md-none">@c.Documento</div>
+                            <div class="cw-muted small d-lg-none">@c.Email</div>
+                        </td>
+                        <td class="d-none d-md-table-cell">@c.Documento</td>
+                        <td class="d-none d-lg-table-cell">@c.Email</td>
+                        <td class="d-none d-lg-table-cell">@c.Telefone</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-secondary"
+                               asp-action="Edit" asp-route-id="@c.Id">Editar</a>
+
+                            <form asp-action="Delete" asp-route-id="@c.Id" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-sm btn-outline-danger"
+                                        type="submit"
+                                        onclick="return confirm('Confirmar exclusão?');">
+                                    Excluir
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (totalPages > 1)
+{
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+            @if (currentPage > 1)
+            {
+                <a class="btn btn-outline-secondary"
+                   href="?q=@q&page=@(currentPage-1)&pageSize=@pageSize">Anterior</a>
+            }
+        </div>
+
+        <div>
+            @if (currentPage < totalPages)
+            {
+                <a class="btn btn-outline-secondary"
+                   href="?q=@q&page=@(currentPage+1)&pageSize=@pageSize">Próxima</a>
+            }
+        </div>
+    </div>
+}

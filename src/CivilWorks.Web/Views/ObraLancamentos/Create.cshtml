@@ -1,0 +1,67 @@
+@model CivilWorks.Domain.Entities.ObraLancamentoFinanceiro
+@using CivilWorks.Domain.Enums
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Novo Lançamento";
+    ViewData["Subtitle"] = $"Obra: {ViewBag.ObraNome}";
+}
+
+<div class="cw-card p-3">
+    <form asp-action="Create" asp-route-obraId="@ViewBag.ObraId" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="text-danger mb-2"></div>
+
+        <div class="row g-3">
+            <div class="col-12 col-md-4">
+                <label class="form-label">Data</label>
+                <input asp-for="Data" type="date" class="form-control" />
+            </div>
+
+            <div class="col-12 col-md-4">
+                <label class="form-label">Tipo</label>
+                <select asp-for="Tipo" class="form-select">
+                    <option value="@TipoLancamento.Despesa">Despesa</option>
+                    <option value="@TipoLancamento.Receita">Receita</option>
+                </select>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <label class="form-label">Valor (R$)</label>
+                <input asp-for="Valor" class="form-control money" placeholder="0,00" />
+            </div>
+
+            <div class="col-12 col-md-6">
+                <label class="form-label">Categoria</label>
+                <input asp-for="Categoria" class="form-control" placeholder="Material, Mão de obra, Extra..." />
+            </div>
+
+            <div class="col-12 col-md-6">
+                <label class="form-label">Descrição</label>
+                <input asp-for="Descricao" class="form-control" placeholder="Detalhe do lançamento" />
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-primary" type="submit">Salvar</button>
+            <a class="btn btn-outline-secondary" asp-controller="Obras" asp-action="Details" asp-route-id="@ViewBag.ObraId">Voltar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.querySelectorAll('.money').forEach(function (input) {
+            input.addEventListener('input', function (e) {
+                let value = e.target.value;
+                value = value.replace(/\D/g, '');
+                value = (value / 100).toFixed(2) + '';
+                value = value.replace(".", ",");
+                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                e.target.value = value;
+            });
+        });
+    </script>
+}
