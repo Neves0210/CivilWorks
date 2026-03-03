@@ -170,13 +170,3 @@ Transformar o CivilWorks em uma plataforma SaaS escalável para empresas de Enge
 **Gabriel Neves**
 
 ````
-
----
-
-Depois de colar:
-
-```powershell
-git add README.md
-git commit -m "Update README - SaaS version"
-git push
-````
