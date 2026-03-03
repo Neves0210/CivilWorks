@@ -53,6 +53,8 @@ CivilWorks/
 ├── .gitignore
 ├── README.md
 └── CivilWorks.sln
+```text
+
 ⚙️ Como Rodar Localmente
 1) Configurar connection string (DEV)
 
