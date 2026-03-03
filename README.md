@@ -1,47 +1,22 @@
-Beleza — vou te passar **um pacote completo**: README mais “SaaS/produto”, roadmap e badges + versionamento inicial (v0.1.0). Você só copia/cola e commita.
+Perfeito 👌
+Abaixo está o **README.md completo, já pronto**, formatado corretamente para o GitHub (sem quebrar blocos de código).
+
+Você pode **copiar tudo** e substituir seu `README.md`.
 
 ---
 
-## 1) README.md “padrão produto” (substituir inteiro)
-
-Abra o `README.md` e substitua TODO o conteúdo por:
-
-````markdown
+```markdown
 # 🏗 CivilWorks
 
 Sistema de **Gestão de Obras para Engenharia Civil**, desenvolvido em **ASP.NET Core** com arquitetura em camadas e preparado para ambiente **SaaS (Multiempresa)**.
 
-> Plataforma para controle de obras, custos, lançamentos financeiros e usuários por empresa.
-
----
-
-## ✅ Principais Funcionalidades
-
-### 🏗 Obras
-- Cadastro / edição / exclusão lógica
-- Status e progresso (%)
-- Orçamento previsto
-- Tela de detalhes com visão financeira
-
-### 💰 Financeiro por Obra
-- Lançamentos (Receita / Despesa)
-- Totais e saldo
-- Despesas por categoria
-- Alerta de estouro de orçamento
-
-### 🧾 Histórico / Auditoria
-- Registro de eventos (criação, edição, exclusão, lançamentos)
-
-### 🔐 Usuários e Permissões
-- Perfis: **Admin**, **Engenheiro**, **Funcionário**
-- Controle por roles (backend protegido)
-- Multiempresa por **EmpresaId**
+> Plataforma para controle completo de obras, financeiro e usuários com segregação por empresa.
 
 ---
 
 ## 🚀 Tecnologias
 
-- **ASP.NET Core**
+- **ASP.NET Core 8**
 - **Entity Framework Core**
 - **SQL Server**
 - **ASP.NET Identity**
@@ -50,27 +25,82 @@ Sistema de **Gestão de Obras para Engenharia Civil**, desenvolvido em **ASP.NET
 
 ---
 
+## ✅ Principais Funcionalidades
+
+### 🏗 Obras
+- Cadastro / edição / exclusão lógica
+- Status da obra
+- Progresso (%)
+- Orçamento previsto
+- Tela de detalhes com visão consolidada
+
+### 💰 Financeiro por Obra
+- Lançamentos (Receita / Despesa)
+- Totais automáticos
+- Saldo da obra
+- Despesas por categoria
+- Alerta de estouro de orçamento
+
+### 🧾 Histórico (Auditoria)
+- Registro automático de eventos
+- Controle de alterações
+- Log por usuário
+
+### 🔐 Usuários e Permissões
+- Perfis: **Admin**, **Engenheiro**, **Funcionário**
+- Controle por Roles
+- Usuários vinculados à empresa
+- Estrutura preparada para SaaS
+
+---
+
+## 🏢 Multiempresa (SaaS Ready)
+
+Cada usuário pertence a uma empresa.
+
+Todos os dados são filtrados por:
+
+```
+
+EmpresaId
+
+```
+
+Isso garante isolamento total entre empresas.
+
+---
+
 ## 🏛 Estrutura do Projeto
 
-```text
+```
+
 CivilWorks/
 ├── src/
 │   ├── CivilWorks.Domain/         → Entidades e regras de negócio
 │   ├── CivilWorks.Application/    → Casos de uso e serviços
 │   ├── CivilWorks.Infrastructure/ → EF Core, Identity, Repositórios
-│   └── CivilWorks.Web/            → Controllers, Views, UI
+│   └── CivilWorks.Web/            → Controllers, Views e Interface
 ├── .gitignore
 ├── README.md
 └── CivilWorks.sln
-````
+
+```
 
 ---
 
 ## ⚙️ Como Rodar Localmente
 
-### 1) Configurar connection string (DEV)
+### 1️⃣ Configurar Connection String (DEV)
 
-Crie o arquivo **`appsettings.Development.json`** em `src/CivilWorks.Web/`:
+Crie o arquivo:
+
+```
+
+src/CivilWorks.Web/appsettings.Development.json
+
+````
+
+Com o conteúdo:
 
 ```json
 {
@@ -78,15 +108,19 @@ Crie o arquivo **`appsettings.Development.json`** em `src/CivilWorks.Web/`:
     "DefaultConnection": "Server=.;Database=CivilWorks;Trusted_Connection=True;TrustServerCertificate=True"
   }
 }
-```
+````
 
-### 2) Aplicar migrations
+---
+
+### 2️⃣ Aplicar Migrations
 
 ```bash
 dotnet ef database update --project src/CivilWorks.Infrastructure --startup-project src/CivilWorks.Web
 ```
 
-### 3) Rodar
+---
+
+### 3️⃣ Executar o Projeto
 
 ```bash
 dotnet run --project src/CivilWorks.Web
@@ -96,40 +130,46 @@ dotnet run --project src/CivilWorks.Web
 
 ## 🔐 Permissões (Resumo)
 
-| Perfil      | Ver Obras | Criar/Editar Obra | Excluir Obra | Criar Lançamento | Excluir Lançamento |
-| ----------- | --------: | ----------------: | -----------: | ---------------: | -----------------: |
-| Admin       |         ✅ |                 ✅ |            ✅ |                ✅ |                  ✅ |
-| Engenheiro  |         ✅ |                 ✅ |            ❌ |                ✅ |                  ✅ |
-| Funcionário |         ✅ |                 ❌ |            ❌ |                ✅ |                  ❌ |
+| Perfil      | Ver Obras | Criar/Editar | Excluir | Criar Lançamento | Excluir Lançamento |
+| ----------- | --------: | -----------: | ------: | ---------------: | -----------------: |
+| Admin       |         ✅ |            ✅ |       ✅ |                ✅ |                  ✅ |
+| Engenheiro  |         ✅ |            ✅ |       ❌ |                ✅ |                  ✅ |
+| Funcionário |         ✅ |            ❌ |       ❌ |                ✅ |                  ❌ |
 
 ---
 
 ## 🗺 Roadmap
 
-### v0.1.0 (atual)
+### 🔹 v0.1.0 (Atual)
 
-* Base SaaS (EmpresaId)
-* Obras + Lançamentos + Dashboard
-* Auditoria por obra
+* Base SaaS com EmpresaId
+* Obras + Financeiro
+* Dashboard
 * Permissões por perfil
 
-### v0.2.0
+### 🔹 v0.2.0
 
 * Checklist por obra
-* Cronograma (tarefas) por obra
-* Relatórios básicos (PDF/Excel)
+* Cronograma de tarefas
+* Relatórios PDF/Excel
 
-### v0.3.0
+### 🔹 v0.3.0
 
-* Estoque / materiais por obra
+* Controle de estoque
 * Centro de custos
-* Perfis refinados + permissões por feature
+* Permissões avançadas
 
-### v1.0.0
+### 🔹 v1.0.0
 
-* Portal do cliente (visão limitada)
-* Multiempresa completo (admin master)
-* Deploy e monitoramento
+* Portal do cliente
+* Admin master multiempresa
+* Deploy em nuvem
+
+---
+
+## 📈 Objetivo
+
+Transformar o CivilWorks em uma plataforma SaaS escalável para empresas de Engenharia Civil.
 
 ---
 
@@ -139,47 +179,14 @@ dotnet run --project src/CivilWorks.Web
 
 ````
 
-> Depois a gente coloca prints e GIFs do sistema — isso dá muito “valor” no GitHub.
-
 ---
 
-## 2) Badges (opcional mas recomendado)
-Para badges de build, precisamos criar um workflow. Vamos fazer isso no passo 3 e depois adicionamos o badge. ✅
+Depois de colar:
 
----
-
-## 3) GitHub Actions (build automático)
-
-Crie este arquivo:
-
-`.github/workflows/build.yml`
-
-Conteúdo:
-
-```yaml
-name: build
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "8.0.x"
-
-      - name: Restore
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --no-restore -c Release
+```powershell
+git add README.md
+git commit -m "Update README - SaaS version"
+git push
 ````
+
+---
